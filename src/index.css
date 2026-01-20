@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  /* --- PALETTE 1: Vintage Coffee Journal --- */
+  
+  /* Light Mode */
+  --color-paper-bg: #ead8c2;      /* Main Background */
+  --color-paper-card: #e3ddc5;    /* Card/Modal Background */
+  --color-ink: #543f3f;           /* Text & Borders */
+
+  /* Dark Mode */
+  --color-night-bg: #543f3f;      /* Main Background */
+  --color-night-card: #765555;    /* Card Background */
+  --color-chalk: #ead8c2;         /* Text & Borders */
+
+  /* Accent (Used for highlights/ratings) */
+  --color-accent: #ae866c;        
+
+  /* Shadows (Tinted with the Ink color for better blending) */
+  --shadow-soft: 4px 4px 0px 0px #543f3f; 
+  --shadow-soft-dark: 4px 4px 0px 0px #2a1f1f; 
+
+  /* Fonts */
+  --font-sans: ui-sans-serif, system-ui, sans-serif, "Rounded Mplus 1c", "Varela Round";
+}
+
+/* Custom Dark Mode Logic */
+@custom-variant dark (&:where(.dark, .dark *));
+
+body {
+  transition-property: background-color, color;
+  transition-duration: 300ms;
+}
