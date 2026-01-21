@@ -1,61 +1,92 @@
 import React, { useState, useEffect } from 'react';
-import { format } from 'date-fns'; // <--- Import this
+import axios from 'axios'; 
+import { format } from 'date-fns';
 import Header from './components/Header';
 import CalendarGrid from './components/CalendarGrid';
 import LogModal from './components/LogModal';
 import UserProfile from './components/UserProfile';
+import AuthPage from './components/AuthPage'; // <--- Import AuthPage
 import { themes } from './data/themes';
-import axios from 'axios';
 
 const ACCOUNT_CREATION_DATE = new Date(2023, 0, 1); 
 
 function App() {
+  // --- AUTH STATE ---
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
+
+  // --- APP STATE ---
   const [darkMode, setDarkMode] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());
-  
   const [view, setView] = useState('calendar'); 
   const [currentTheme, setCurrentTheme] = useState('vintage'); 
-  
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [logs, setLogs] = useState([]);
-  const USER_ID = "test-user-123"; // Hardcode for now until you add Login
 
-  // Fetch logs on load
+  // 1. Initial Data Fetch (Only if logged in)
   useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const res = await axios.get(`http://localhost:5000/api/entries/${USER_ID}`);
-        setLogs(res.data);
-      } catch (err) {
-        console.error("Failed to fetch logs", err);
-      }
-    };
-    fetchLogs();
-  }, []);
+    if (token && user) {
+      fetchLogs();
+    }
+  }, [token, user]);
 
-  // Save log to backend
-  const handleSaveLog = async (newLog) => {
+  const fetchLogs = async () => {
     try {
-      // Optimistic UI Update (Update screen instantly before server replies)
-      setLogs(prevLogs => {
-        const existing = prevLogs.filter(l => l.date !== newLog.date);
-        return [...existing, newLog];
+      // Pass the token in the header
+      const res = await axios.get(`http://localhost:5000/api/entries/${user.id}`, {
+        headers: { Authorization: token }
       });
-
-      // Send to Server
-      await axios.post('http://localhost:5000/api/entries', {
-        userId: USER_ID,
-        ...newLog
-      });
-      
+      setLogs(res.data);
     } catch (err) {
-      console.error("Failed to save log", err);
-      // Optional: Revert state if server fails
+      console.error("Fetch error:", err);
+      // If 401 Unauthorized, log the user out
+      if (err.response && err.response.status === 401) {
+        handleLogout();
+      }
     }
   };
 
-  // Theme Logic
+  // 2. Handle Login Success
+  const handleLoginSuccess = (newToken, newUser) => {
+    localStorage.setItem('token', newToken);
+    localStorage.setItem('user', JSON.stringify(newUser));
+    setToken(newToken);
+    setUser(newUser);
+  };
+
+  // 3. Handle Logout
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setToken(null);
+    setUser(null);
+    setLogs([]); // Clear sensitive data
+    setView('calendar'); // Reset view
+  };
+
+  // 4. Handle Saving Logs (With Auth)
+  const handleSaveLog = async (newLog) => {
+    // Optimistic Update
+    setLogs(prevLogs => {
+      const existing = prevLogs.filter(l => l.date !== newLog.date);
+      return [...existing, newLog];
+    });
+
+    try {
+      await axios.post('http://localhost:5000/api/entries', {
+        userId: user.id, // Ensure backend uses this or extracts from token
+        ...newLog
+      }, {
+        headers: { Authorization: token }
+      });
+    } catch (err) {
+      console.error("Save error:", err);
+      // Optional: Revert optimistic update here on fail
+    }
+  };
+
+  // Theme & Dark Mode Effects (Same as before)
   useEffect(() => {
     const themeColors = themes[currentTheme].colors;
     for (const [key, value] of Object.entries(themeColors)) {
@@ -63,7 +94,6 @@ function App() {
     }
   }, [currentTheme]);
 
-  // Dark Mode Logic
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -76,11 +106,19 @@ function App() {
     setSelectedDate(date);
     setModalOpen(true);
   };
-  // FIX: Use format() here too to find data for the modal
+
   const currentModalData = logs.find(l => 
     selectedDate && l.date === format(selectedDate, 'yyyy-MM-dd')
   );
 
+  // --- CONDITIONAL RENDERING ---
+  
+  // If not logged in, show Auth Page
+  if (!token) {
+    return <AuthPage onLoginSuccess={handleLoginSuccess} />;
+  }
+
+  // If logged in, show Main App
   return (
     <div className={`min-h-screen w-full transition-colors duration-500 font-sans ${darkMode ? 'bg-night-bg text-chalk' : 'bg-paper-bg text-ink'}`}>
       <div className="max-w-4xl mx-auto p-4 md:p-8">
@@ -93,6 +131,7 @@ function App() {
           setDarkMode={setDarkMode}
           onProfileClick={() => setView('profile')} 
           isProfileActive={view === 'profile'}
+          // Add a logout button inside header or profile later if you want
         />
 
         {view === 'calendar' ? (
@@ -107,6 +146,8 @@ function App() {
             currentTheme={currentTheme} 
             setTheme={setCurrentTheme} 
             onBack={() => setView('calendar')}
+            logs={logs}
+            onLogout={handleLogout} // Pass logout to Profile
           />
         )}
 
