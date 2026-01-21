@@ -146,11 +146,14 @@ function App() {
             currentTheme={currentTheme} 
             setTheme={setCurrentTheme} 
             onBack={() => setView('calendar')}
-            logs={logs}
-            onLogout={handleLogout} // Pass logout to Profile
+            
+            // --- NEW PROPS ADDED HERE ---
+            user={user}         // Pass the logged-in user object
+            token={token}       // Pass the auth token
+            onLogout={handleLogout}
+            // ----------------------------
           />
         )}
-
         {modalOpen && (
           <LogModal 
             onClose={() => setModalOpen(false)}
