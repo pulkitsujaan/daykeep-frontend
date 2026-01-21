@@ -7,7 +7,12 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 1. Fetch Real Stats from Backend
+  // Helper to format join date
+  // --- FIX 3: Dynamic Member Since Date ---
+  const memberSince = user?.createdAt 
+    ? new Date(user.createdAt).getFullYear() 
+    : new Date().getFullYear();
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -25,10 +30,8 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
     if (user && token) fetchStats();
   }, [user, token]);
 
-  // 2. Determine Persona based on Backend Data
   const analysis = useMemo(() => {
     if (!stats || stats.totalLogs === 0) return null;
-
     const { avgRating, struggleCount, victoryCount } = stats;
     const ratingNum = parseFloat(avgRating);
 
@@ -60,11 +63,10 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 w-full max-w-2xl mx-auto pb-10">
       
-      {/* 1. Header Card */}
+      {/* Header Card */}
       <div className="bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 md:p-8 shadow-soft dark:shadow-soft-dark mb-8 relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
           
-          {/* Avatar */}
           <div className="w-24 h-24 rounded-2xl bg-ink dark:bg-chalk text-paper-bg dark:text-night-bg flex items-center justify-center border-2 border-ink dark:border-chalk shadow-soft">
             <User size={40} strokeWidth={2.5} />
           </div>
@@ -77,12 +79,12 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
                 <Mail size={16} /> {user?.email}
               </span>
               <span className="flex items-center gap-2">
-                <Calendar size={16} /> Member since 2023
+                {/* Displaying dynamic year */}
+                <Calendar size={16} /> Member since {memberSince}
               </span>
             </div>
           </div>
 
-           {/* Logout Button (Top Right on Desktop) */}
            <div className="hidden md:block">
               <button onClick={onLogout} className="p-2 text-rose-500 hover:bg-rose-100 rounded-xl transition-colors">
                 <LogOut size={24} />
@@ -91,7 +93,7 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
         </div>
       </div>
 
-      {/* 2. STATS SECTION */}
+      {/* Stats Section */}
       {loading ? (
         <div className="flex justify-center py-10">
             <Loader2 className="animate-spin text-ink dark:text-chalk" size={40} />
@@ -99,7 +101,6 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
       ) : stats && analysis ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             
-            {/* Average Score */}
             <div className="bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 shadow-soft dark:shadow-soft-dark flex items-center gap-4">
                 <div className="p-3 bg-blue-100 text-blue-800 rounded-2xl border-2 border-ink">
                     <TrendingUp size={32} />
@@ -110,7 +111,6 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
                 </div>
             </div>
 
-            {/* Total Entries */}
             <div className="bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 shadow-soft dark:shadow-soft-dark flex items-center gap-4">
                 <div className="p-3 bg-[var(--color-accent)] text-white rounded-2xl border-2 border-ink">
                     <CheckCircle size={32} />
@@ -121,23 +121,19 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
                 </div>
             </div>
 
-            {/* AI ANALYSIS CARD */}
             <div className="md:col-span-2 bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 md:p-8 shadow-soft dark:shadow-soft-dark mt-2 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10">
                     <Brain size={120} />
                 </div>
-                
                 <h3 className="text-xl font-black flex items-center gap-2 mb-6">
                     <Sparkles size={20} className="text-[var(--color-accent)]" /> 
                     Journal Analysis
                 </h3>
-
                 <div className="space-y-6 relative z-10">
                     <div>
                         <span className="text-xs font-bold uppercase tracking-widest opacity-60">Your Archetype</span>
                         <p className="text-3xl font-black text-[var(--color-accent)]">{analysis.persona}</p>
                     </div>
-
                     <div className="grid md:grid-cols-2 gap-6">
                         <div className="bg-white/50 dark:bg-black/20 p-4 rounded-2xl border-2 border-ink/10">
                             <h4 className="font-bold flex items-center gap-2 mb-2"><Brain size={16}/> What Drives You</h4>
@@ -157,7 +153,7 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
         </div>
       )}
 
-      {/* 3. Theme Selector */}
+      {/* Theme Selector */}
       <div className="space-y-4">
         <h3 className="text-2xl font-black text-ink dark:text-chalk px-2">Choose Your Look</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -196,19 +192,11 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
         </div>
       </div>
 
-      {/* Footer / Mobile Logout */}
       <div className="mt-8 flex flex-col items-center gap-4">
-          <button 
-              onClick={onBack}
-              className="text-ink dark:text-chalk font-bold underline decoration-2 underline-offset-4 opacity-60 hover:opacity-100"
-          >
+          <button onClick={onBack} className="text-ink dark:text-chalk font-bold underline decoration-2 underline-offset-4 opacity-60 hover:opacity-100">
               Back to Calendar
           </button>
-          
-          <button 
-              onClick={onLogout}
-              className="md:hidden text-rose-500 font-black text-sm uppercase tracking-widest hover:text-rose-600 transition-colors"
-          >
+          <button onClick={onLogout} className="md:hidden text-rose-500 font-black text-sm uppercase tracking-widest hover:text-rose-600 transition-colors">
               Log Out
           </button>
       </div>
