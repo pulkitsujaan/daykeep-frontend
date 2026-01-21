@@ -7,6 +7,7 @@ import LogModal from './components/LogModal';
 import UserProfile from './components/UserProfile';
 import AuthPage from './components/AuthPage';
 import Toast from './components/Toast'; // <--- Import Toast
+import ViewEntryModal from './components/ViewEntryModal'; // <--- Import new component
 import { themes } from './data/themes';
 
 const ACCOUNT_CREATION_DATE = new Date(2023, 0, 1); 
@@ -24,6 +25,7 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [logs, setLogs] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
 
   // --- NEW: Toast State ---
   const [toast, setToast] = useState(null); // { message: string, type: 'success' | 'error' }
@@ -117,6 +119,10 @@ const handleSaveLog = async (newLog) => {
   }
 };
 
+const handleEditRequest = () => {
+    setIsEditing(true);
+  };
+
   useEffect(() => {
     const themeColors = themes[currentTheme].colors;
     for (const [key, value] of Object.entries(themeColors)) {
@@ -134,13 +140,22 @@ const handleSaveLog = async (newLog) => {
 
   const handleDayClick = (date) => {
     setSelectedDate(date);
+    
+    // Check if data exists for this day
+    const existingLog = logs.find(l => l.date === format(date, 'yyyy-MM-dd'));
+
+    if (existingLog) {
+      setIsEditing(false); // Open in VIEW mode
+    } else {
+      setIsEditing(true);  // Open in EDIT mode (New Entry)
+    }
+    
     setModalOpen(true);
   };
 
   const currentModalData = logs.find(l => 
     selectedDate && l.date === format(selectedDate, 'yyyy-MM-dd')
   );
-
   return (
     <div className={`min-h-screen w-full transition-colors duration-500 font-sans ${darkMode ? 'bg-night-bg text-chalk' : 'bg-paper-bg text-ink'}`}>
       
@@ -187,14 +202,27 @@ const handleSaveLog = async (newLog) => {
             />
           )}
 
-          {modalOpen && (
+          {/* CONDITIONAL MODAL RENDERING */}
+       {modalOpen && (
+          isEditing ? (
+            // SHOW EDIT MODAL
             <LogModal 
               onClose={() => setModalOpen(false)}
               date={selectedDate}
               onSave={handleSaveLog}
               existingData={currentModalData}
+              token={token}
             />
-          )}
+          ) : (
+            // SHOW VIEW MODAL
+            <ViewEntryModal 
+              onClose={() => setModalOpen(false)}
+              date={selectedDate}
+              data={currentModalData}
+              onEdit={handleEditRequest} // Pass the switch function
+            />
+          )
+       )}
         </div>
       )}
     </div>

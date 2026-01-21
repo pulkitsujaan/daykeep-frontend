@@ -45,6 +45,9 @@ const DayCell = ({ date, onClick, disabled, data }) => {
         <div className={`absolute left-1 right-1 bottom-1 md:left-2 md:right-2 md:bottom-2 top-6 md:top-8 rounded-lg md:rounded-xl border border-ink/20 dark:border-black/20 opacity-90 ${ratingColorClass}`}>
         </div>
       )}
+      {data?.images?.length > 0 && (
+    <div className="absolute top-1 right-1 w-2 h-2 rounded-full bg-white border border-ink shadow-sm z-20" />
+)}
     </div>
   );
 };
