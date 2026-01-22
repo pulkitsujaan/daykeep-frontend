@@ -10,6 +10,7 @@ const LogModal = ({ onClose, date, onSave, existingData, token }) => { // <--- A
   const [newFiles, setNewFiles] = useState([]); // Stores File objects (to be uploaded)
   const [previewUrls, setPreviewUrls] = useState([]); // Temporary previews for new files
   const [isUploading, setIsUploading] = useState(false);
+  const currentHour = new Date().getHours();
   const isGracePeriod = currentHour >= 0 && currentHour < 4;
 
   const fileInputRef = useRef(null);
