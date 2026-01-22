@@ -5,6 +5,37 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DayKeep. | Daily Journal</title>
+    <script>
+  (function() {
+    // 1. Theme Data Mapping (Only need background colors for the flash-fix)
+    const themeBgMap = {
+      'vintage': { light: '#ead8c2', dark: '#543f3f' },
+      'ocean':   { light: '#ecfeff', dark: '#083344' },
+      'forest':  { light: '#f0fdf4', dark: '#052e16' },
+      'lavender':{ light: '#faf5ff', dark: '#3b0764' }
+    };
+
+    // 2. Retrieve Preferences
+    const savedTheme = localStorage.getItem('appTheme') || 'vintage';
+    const isDark = localStorage.getItem('darkMode') === 'true';
+    
+    // 3. Apply Dark Mode Class immediately
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    }
+
+    // 4. Apply Background Color immediately
+    const activeTheme = themeBgMap[savedTheme] || themeBgMap['vintage'];
+    const bgColor = isDark ? activeTheme.dark : activeTheme.light;
+    
+    // We set the background on the documentElement so it covers everything
+    document.documentElement.style.backgroundColor = bgColor;
+    
+    // Also set the CSS variable so components that load later use it
+    document.documentElement.style.setProperty('--color-paper-bg', activeTheme.light);
+    document.documentElement.style.setProperty('--color-night-bg', activeTheme.dark);
+  })();
+</script>
   </head>
   <body>
     <div id="root"></div>

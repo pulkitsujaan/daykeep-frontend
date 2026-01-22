@@ -17,15 +17,20 @@ function App() {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
 
   // --- FIX 1: Default to Light Mode (false) ---
-  const [darkMode, setDarkMode] = useState(false); 
+  const [currentTheme, setCurrentTheme] = useState(
+    localStorage.getItem('appTheme') || 'vintage'
+  );
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem('darkMode') === 'true' // LocalStorage saves strings, so we convert to boolean
+  );
   
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState(localStorage.getItem('appView') || 'calendar');
-  const [currentTheme, setCurrentTheme] = useState('vintage'); 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [logs, setLogs] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [streak, setStreak] = useState(0);
 
   // --- NEW: Toast State ---
   const [toast, setToast] = useState(null); // { message: string, type: 'success' | 'error' }
@@ -44,30 +49,33 @@ function App() {
   useEffect(() => {
     localStorage.setItem('appView', view);
   }, [view]);
+  useEffect(() => {
+    localStorage.setItem('appTheme', currentTheme);
+  }, [currentTheme]);
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
 
   const fetchLogs = async () => {
-    // 1. Safety Check: Ensure we have a user object
     if (!user) return;
-
-    // 2. Robust ID: Check both 'id' and '_id'
     const realUserId = user.id || user._id;
 
-    if (!realUserId) {
-      console.error("Cannot fetch logs: Missing User ID");
-      return;
-    }
-
     try {
-      // 3. Use the robust ID in the URL
-      const res = await axios.get(`http://localhost:5000/api/entries/${realUserId}`, {
-        headers: { Authorization: token }
-      });
-      setLogs(res.data);
+      // Fetch both Logs AND Stats (where the streak is calculated)
+      const [logsRes, statsRes] = await Promise.all([
+        axios.get(`http://localhost:5000/api/entries/${realUserId}`, {
+          headers: { Authorization: token }
+        }),
+        axios.get(`http://localhost:5000/api/entries/stats/${realUserId}`, {
+          headers: { Authorization: token }
+        })
+      ]);
+
+      setLogs(logsRes.data);
+      setStreak(statsRes.data.streak); // Set the streak here
     } catch (err) {
       console.error("Fetch error:", err);
-      if (err.response && err.response.status === 401) {
-        handleLogout();
-      }
     }
   };
 
@@ -132,9 +140,11 @@ const handleEditRequest = () => {
   };
 
   useEffect(() => {
-    const themeColors = themes[currentTheme].colors;
-    for (const [key, value] of Object.entries(themeColors)) {
-      document.body.style.setProperty(key, value);
+    if (themes[currentTheme]) {
+      const themeColors = themes[currentTheme].colors;
+      for (const [key, value] of Object.entries(themeColors)) {
+        document.body.style.setProperty(key, value);
+      }
     }
   }, [currentTheme]);
 
@@ -191,6 +201,7 @@ const handleEditRequest = () => {
             onProfileClick={() => setView('profile')} 
             isProfileActive={view === 'profile'}
             onHomeClick={() => setView('calendar')}
+            streak={streak}
           />
 
           {view === 'calendar' ? (

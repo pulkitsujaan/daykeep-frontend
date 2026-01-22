@@ -10,6 +10,7 @@ const LogModal = ({ onClose, date, onSave, existingData, token }) => { // <--- A
   const [newFiles, setNewFiles] = useState([]); // Stores File objects (to be uploaded)
   const [previewUrls, setPreviewUrls] = useState([]); // Temporary previews for new files
   const [isUploading, setIsUploading] = useState(false);
+  const isGracePeriod = currentHour >= 0 && currentHour < 4;
 
   const fileInputRef = useRef(null);
 
@@ -211,6 +212,11 @@ const LogModal = ({ onClose, date, onSave, existingData, token }) => { // <--- A
                 className="flex-[2] py-3 bg-ink dark:bg-chalk text-white dark:text-night-bg font-black rounded-xl border-2 border-transparent hover:-translate-y-1 hover:shadow-lg transition-all flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isUploading ? 'Uploading...' : (existingData ? 'Update Entry' : 'Save Entry')}
+              {isGracePeriod && (
+  <p className="text-[10px] font-bold text-orange-500 uppercase text-center mb-2">
+    ✨ Night Owl Mode: Your streak is still safe!
+  </p>
+)}
             </button>
           </div>
         </div>

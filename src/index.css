@@ -27,7 +27,21 @@
 /* Custom Dark Mode Logic */
 @custom-variant dark (&:where(.dark, .dark *));
 
-body {
+:root {
+  /* Set a default so the variables exist */
+  --color-paper-bg: #ead8c2;
+  --color-night-bg: #543f3f;
+}
+
+html, body {
+  background-color: var(--color-paper-bg); 
+  transition: background-color 0.4s ease-in-out;
+  margin: 0;
+  padding: 0;
   transition-property: background-color, color;
   transition-duration: 300ms;
+}
+
+html.dark body {
+  background-color: var(--color-night-bg);
 }

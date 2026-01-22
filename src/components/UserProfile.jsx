@@ -1,22 +1,26 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { User, Mail, Calendar, CheckCircle, TrendingUp, Brain, Lightbulb, Sparkles, Loader2, LogOut } from 'lucide-react';
+import { 
+  User, Mail, Calendar, CheckCircle, TrendingUp, 
+  Brain, Lightbulb, Sparkles, Loader2, LogOut, Flame 
+} from 'lucide-react';
 import { themes } from '../data/themes';
 
 const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Helper to format join date
-  // --- FIX 3: Dynamic Member Since Date ---
+  // Calculate dynamic join year from user data
   const memberSince = user?.createdAt 
     ? new Date(user.createdAt).getFullYear() 
     : new Date().getFullYear();
 
+  // 1. Fetch real statistics and streaks from the Backend
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/entries/stats/${user.id}`, {
+        const realUserId = user.id || user._id;
+        const res = await axios.get(`http://localhost:5000/api/entries/stats/${realUserId}`, {
           headers: { Authorization: token }
         });
         setStats(res.data);
@@ -30,8 +34,10 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
     if (user && token) fetchStats();
   }, [user, token]);
 
+  // 2. Personality Analysis Logic (The Archetype Engine)
   const analysis = useMemo(() => {
     if (!stats || stats.totalLogs === 0) return null;
+
     const { avgRating, struggleCount, victoryCount } = stats;
     const ratingNum = parseFloat(avgRating);
 
@@ -61,101 +67,132 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
   }, [stats]);
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 w-full max-w-2xl mx-auto pb-10">
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 w-full max-w-3xl mx-auto pb-10">
       
-      {/* Header Card */}
+      {/* --- HEADER CARD --- */}
       <div className="bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 md:p-8 shadow-soft dark:shadow-soft-dark mb-8 relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
           
+          {/* Avatar Box */}
           <div className="w-24 h-24 rounded-2xl bg-ink dark:bg-chalk text-paper-bg dark:text-night-bg flex items-center justify-center border-2 border-ink dark:border-chalk shadow-soft">
             <User size={40} strokeWidth={2.5} />
           </div>
 
           <div className="flex-1 space-y-2">
-            <h2 className="text-3xl font-black text-ink dark:text-chalk">{user?.name || "User"}</h2>
+            <h2 className="text-3xl font-black text-ink dark:text-chalk">{user?.name || "Explorer"}</h2>
             
             <div className="flex flex-col md:flex-row gap-4 text-ink/70 dark:text-chalk/70 font-bold text-sm items-center md:items-start">
               <span className="flex items-center gap-2">
                 <Mail size={16} /> {user?.email}
               </span>
               <span className="flex items-center gap-2">
-                {/* Displaying dynamic year */}
                 <Calendar size={16} /> Member since {memberSince}
               </span>
             </div>
           </div>
 
+           {/* Logout Button (Desktop) */}
            <div className="hidden md:block">
-              <button onClick={onLogout} className="p-2 text-rose-500 hover:bg-rose-100 rounded-xl transition-colors">
+              <button 
+                onClick={onLogout} 
+                className="p-3 text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded-2xl transition-all active:scale-90"
+                title="Logout"
+              >
                 <LogOut size={24} />
               </button>
            </div>
         </div>
       </div>
 
-      {/* Stats Section */}
+      {/* --- STATS GRID --- */}
       {loading ? (
-        <div className="flex justify-center py-10">
-            <Loader2 className="animate-spin text-ink dark:text-chalk" size={40} />
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <Loader2 className="animate-spin text-ink dark:text-chalk" size={48} />
+            <p className="font-bold opacity-50 uppercase tracking-widest text-xs">Analyzing your journey...</p>
         </div>
-      ) : stats && analysis ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            
-            <div className="bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 shadow-soft dark:shadow-soft-dark flex items-center gap-4">
-                <div className="p-3 bg-blue-100 text-blue-800 rounded-2xl border-2 border-ink">
-                    <TrendingUp size={32} />
-                </div>
-                <div>
-                    <h4 className="text-sm font-bold opacity-60 uppercase tracking-widest">Avg. Score</h4>
-                    <span className="text-4xl font-black">{stats.avgRating}<span className="text-lg opacity-50">/5</span></span>
-                </div>
-            </div>
-
-            <div className="bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 shadow-soft dark:shadow-soft-dark flex items-center gap-4">
-                <div className="p-3 bg-[var(--color-accent)] text-white rounded-2xl border-2 border-ink">
-                    <CheckCircle size={32} />
-                </div>
-                <div>
-                    <h4 className="text-sm font-bold opacity-60 uppercase tracking-widest">Total Logs</h4>
-                    <span className="text-4xl font-black">{stats.totalLogs}</span>
-                </div>
-            </div>
-
-            <div className="md:col-span-2 bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 md:p-8 shadow-soft dark:shadow-soft-dark mt-2 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10">
-                    <Brain size={120} />
-                </div>
-                <h3 className="text-xl font-black flex items-center gap-2 mb-6">
-                    <Sparkles size={20} className="text-[var(--color-accent)]" /> 
-                    Journal Analysis
-                </h3>
-                <div className="space-y-6 relative z-10">
+      ) : stats ? (
+        <div className="space-y-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                {/* Streak Card */}
+                <div className="bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 shadow-soft flex items-center gap-4">
+                    <div className="p-3 bg-orange-100 text-orange-600 rounded-2xl border-2 border-ink">
+                        <Flame size={32} strokeWidth={2.5} />
+                    </div>
                     <div>
-                        <span className="text-xs font-bold uppercase tracking-widest opacity-60">Your Archetype</span>
-                        <p className="text-3xl font-black text-[var(--color-accent)]">{analysis.persona}</p>
+                        <h4 className="text-xs font-bold opacity-60 uppercase tracking-widest">Streak</h4>
+                        <span className="text-3xl font-black">{stats.streak} <span className="text-sm opacity-50 font-bold">days</span></span>
                     </div>
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div className="bg-white/50 dark:bg-black/20 p-4 rounded-2xl border-2 border-ink/10">
-                            <h4 className="font-bold flex items-center gap-2 mb-2"><Brain size={16}/> What Drives You</h4>
-                            <p className="text-sm font-medium opacity-80 leading-relaxed">{analysis.motivation}</p>
-                        </div>
-                        <div className="bg-white/50 dark:bg-black/20 p-4 rounded-2xl border-2 border-ink/10">
-                            <h4 className="font-bold flex items-center gap-2 mb-2"><Lightbulb size={16}/> Productivity Tip</h4>
-                            <p className="text-sm font-medium opacity-80 leading-relaxed">{analysis.tip}</p>
-                        </div>
+                </div>
+
+                {/* Avg Score Card */}
+                <div className="bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 shadow-soft flex items-center gap-4">
+                    <div className="p-3 bg-blue-100 text-blue-800 rounded-2xl border-2 border-ink">
+                        <TrendingUp size={32} />
+                    </div>
+                    <div>
+                        <h4 className="text-xs font-bold opacity-60 uppercase tracking-widest">Avg. Score</h4>
+                        <span className="text-3xl font-black">{stats.avgRating}<span className="text-sm opacity-50">/5</span></span>
+                    </div>
+                </div>
+
+                {/* Total Logs Card */}
+                <div className="bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 shadow-soft flex items-center gap-4">
+                    <div className="p-3 bg-[var(--color-accent)] text-white rounded-2xl border-2 border-ink">
+                        <CheckCircle size={32} />
+                    </div>
+                    <div>
+                        <h4 className="text-xs font-bold opacity-60 uppercase tracking-widest">Total Logs</h4>
+                        <span className="text-3xl font-black">{stats.totalLogs}</span>
                     </div>
                 </div>
             </div>
+
+            {/* AI Archetype Analysis */}
+            {analysis && (
+                <div className="bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl p-6 md:p-8 shadow-soft dark:shadow-soft-dark relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-5">
+                        <Brain size={150} />
+                    </div>
+                    
+                    <h3 className="text-xl font-black flex items-center gap-2 mb-6">
+                        <Sparkles size={20} className="text-[var(--color-accent)]" /> 
+                        Personality Archetype
+                    </h3>
+
+                    <div className="space-y-6 relative z-10">
+                        <div>
+                            <span className="text-xs font-bold uppercase tracking-widest opacity-60">You are the</span>
+                            <p className="text-4xl font-black text-[var(--color-accent)] leading-tight">{analysis.persona}</p>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-4">
+                            <div className="bg-white/40 dark:bg-black/20 p-5 rounded-2xl border-2 border-ink/5">
+                                <h4 className="font-bold flex items-center gap-2 mb-2 text-sm uppercase tracking-wider opacity-70">
+                                    <Brain size={16}/> Motivation
+                                </h4>
+                                <p className="text-sm font-bold leading-relaxed">{analysis.motivation}</p>
+                            </div>
+                            <div className="bg-white/40 dark:bg-black/20 p-5 rounded-2xl border-2 border-ink/5">
+                                <h4 className="font-bold flex items-center gap-2 mb-2 text-sm uppercase tracking-wider opacity-70">
+                                    <Lightbulb size={16}/> Growth Tip
+                                </h4>
+                                <p className="text-sm font-bold leading-relaxed">{analysis.tip}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
       ) : (
-        <div className="p-8 text-center border-3 border-dashed border-ink/30 rounded-3xl mb-8">
-            <p className="font-bold opacity-50">Log some days to see your statistics and personality analysis!</p>
+        <div className="p-12 text-center border-3 border-dashed border-ink/20 rounded-3xl mb-8 bg-black/5">
+            <p className="font-bold opacity-40">Start logging your days to unlock deep insights and streaks!</p>
         </div>
       )}
 
-      {/* Theme Selector */}
+      {/* --- THEME SELECTOR --- */}
       <div className="space-y-4">
-        <h3 className="text-2xl font-black text-ink dark:text-chalk px-2">Choose Your Look</h3>
+        <h3 className="text-2xl font-black text-ink dark:text-chalk px-2">Visual Style</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Object.entries(themes).map(([key, theme]) => {
             const isActive = currentTheme === key;
@@ -164,10 +201,10 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
                 key={key}
                 onClick={() => setTheme(key)}
                 className={`
-                  relative p-4 rounded-2xl border-3 text-left transition-all duration-200 group
+                  relative p-5 rounded-2xl border-3 text-left transition-all duration-300 group
                   ${isActive 
-                    ? 'border-ink dark:border-chalk bg-white/50 dark:bg-black/20 ring-2 ring-offset-2 ring-[var(--color-accent)]' 
-                    : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5'
+                    ? 'border-ink dark:border-chalk bg-white dark:bg-night-card shadow-soft ring-2 ring-[var(--color-accent)]/20' 
+                    : 'border-ink/10 dark:border-chalk/10 hover:border-ink/30 dark:hover:border-chalk/30'
                   }
                 `}
               >
@@ -177,12 +214,12 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
                     <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: theme.colors['--color-ink'] }} />
                     <div className="w-8 h-8 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: theme.colors['--color-accent'] }} />
                   </div>
-                  <span className={`font-bold text-lg ${isActive ? 'text-ink dark:text-chalk' : 'opacity-60'}`}>
+                  <span className={`font-black text-lg ${isActive ? 'text-ink dark:text-chalk' : 'opacity-40 group-hover:opacity-100'}`}>
                     {theme.name}
                   </span>
                   {isActive && (
-                    <div className="ml-auto bg-ink dark:bg-chalk text-paper-bg dark:text-night-bg p-1 rounded-full">
-                        <CheckCircle size={16} />
+                    <div className="ml-auto bg-[var(--color-accent)] text-white p-1 rounded-lg">
+                        <CheckCircle size={16} strokeWidth={3} />
                     </div>
                   )}
                 </div>
@@ -192,12 +229,20 @@ const UserProfile = ({ currentTheme, setTheme, onBack, onLogout, user, token }) 
         </div>
       </div>
 
-      <div className="mt-8 flex flex-col items-center gap-4">
-          <button onClick={onBack} className="text-ink dark:text-chalk font-bold underline decoration-2 underline-offset-4 opacity-60 hover:opacity-100">
-              Back to Calendar
+      {/* --- FOOTER ACTIONS --- */}
+      <div className="mt-12 flex flex-col items-center gap-6">
+          <button 
+              onClick={onBack}
+              className="text-ink dark:text-chalk font-black underline decoration-4 underline-offset-8 decoration-[var(--color-accent)]/30 hover:decoration-[var(--color-accent)] transition-all"
+          >
+              Return to Journal
           </button>
-          <button onClick={onLogout} className="md:hidden text-rose-500 font-black text-sm uppercase tracking-widest hover:text-rose-600 transition-colors">
-              Log Out
+          
+          <button 
+              onClick={onLogout}
+              className="md:hidden flex items-center gap-2 text-rose-500 font-black text-sm uppercase tracking-widest pt-4"
+          >
+              <LogOut size={18} /> Sign Out
           </button>
       </div>
     </div>

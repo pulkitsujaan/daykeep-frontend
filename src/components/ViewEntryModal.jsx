@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
-import { X, Edit3, Maximize2, Star } from 'lucide-react';
+import { X, Edit3, Maximize2, Star, Sparkles } from 'lucide-react';
 
 const ViewEntryModal = ({ date, data, onClose, onEdit }) => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const isGenuine = data?.createdAt && data?.date === new Date(data.createdAt).toISOString().split('T')[0];
 
   if (!data) return null;
 
@@ -15,6 +16,11 @@ const ViewEntryModal = ({ date, data, onClose, onEdit }) => {
           
           {/* Header with Edit & Close */}
           <div className="flex justify-between items-start mb-6">
+            {isGenuine && (
+    <div className="flex items-center gap-1 text-[var(--color-accent)] font-bold text-xs uppercase tracking-tighter">
+        <Sparkles size={14} /> On-Time Entry
+    </div>
+)}
             <div>
               <h3 className="text-3xl font-black tracking-tight">{format(date, 'MMM do')}</h3>
               <p className="text-sm font-bold opacity-60 uppercase tracking-widest">{format(date, 'EEEE')}</p>

@@ -1,0 +1,16 @@
+:root {
+  /* Set a default so the variables exist */
+  --color-paper-bg: #ead8c2;
+  --color-night-bg: #543f3f;
+}
+
+html, body {
+  background-color: var(--color-paper-bg);
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.5s ease;
+}
+
+html.dark body {
+  background-color: var(--color-night-bg);
+}
