@@ -1,6 +1,6 @@
 import React from 'react';
 import { 
-  startOfMonth, endOfMonth, startOfWeek, endOfWeek, 
+  startOfMonth, endOfMonth, startOfWeek, endOfWeek, startOfDay, 
   eachDayOfInterval, isBefore, isAfter, format // <--- Import isAfter
 } from 'date-fns';
 import DayCell from './DayCell';
@@ -15,7 +15,7 @@ const CalendarGrid = ({ currentDate, accountCreationDate, onDayClick, logs }) =>
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   
   // Get "Right Now" to compare against
-  const today = new Date();
+  const today = startOfDay(new Date());
 
   return (
     <div className="w-full">
@@ -32,13 +32,16 @@ const CalendarGrid = ({ currentDate, accountCreationDate, onDayClick, logs }) =>
       <div className="grid grid-cols-7 gap-1 md:gap-4">
         {calendarDays.map((day, index) => {
             const isCurrentMonth = day.getMonth() === monthStart.getMonth();
-            
-            // --- FIX: Disable if before creation OR after today ---
-            const isDisabled = isBefore(day, accountCreationDate) || isAfter(day, today);
-            
             const dayString = format(day, 'yyyy-MM-dd');
             const dayLog = logs.find(l => l.date === dayString);
 
+            // 1. Logic: Is this day in the future?
+            const isFuture = isAfter(day, today);
+            
+            // 2. Logic: Only disable days BEFORE account creation
+            // We REMOVED "|| isAfter(day, today)" so future days are clickable
+            const isDisabled = isBefore(day, accountCreationDate);
+            
             return (
                 <DayCell 
                     key={index}
@@ -46,6 +49,7 @@ const CalendarGrid = ({ currentDate, accountCreationDate, onDayClick, logs }) =>
                     disabled={isDisabled}
                     onClick={onDayClick}
                     data={dayLog}
+                    isFuture={isFuture} // <--- Pass this new prop
                 />
             );
         })}

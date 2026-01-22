@@ -240,6 +240,7 @@ const handleEditRequest = () => {
               date={selectedDate}
               data={currentModalData}
               onEdit={handleEditRequest} // Pass the switch function
+              token={token}
             />
           )
        )}
