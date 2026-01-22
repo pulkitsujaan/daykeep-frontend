@@ -121,6 +121,11 @@ const LogModal = ({ onClose, date, onSave, existingData, token }) => { // <--- A
               className="w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer accent-ink dark:accent-chalk"
             />
           </div>
+          {/* --- RESTORED LABELS --- */}
+  <div className="flex justify-between px-2 mt-1">
+      <span className="text-xs font-bold opacity-40 uppercase tracking-widest">Lazy</span>
+      <span className="text-xs font-bold opacity-40 uppercase tracking-widest">Fire</span>
+  </div>
 
           {/* Text Area */}
           <div>

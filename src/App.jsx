@@ -20,7 +20,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false); 
   
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState('calendar'); 
+  const [view, setView] = useState(localStorage.getItem('appView') || 'calendar');
   const [currentTheme, setCurrentTheme] = useState('vintage'); 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -40,6 +40,10 @@ function App() {
       fetchLogs();
     }
   }, [token, user]);
+
+  useEffect(() => {
+    localStorage.setItem('appView', view);
+  }, [view]);
 
   const fetchLogs = async () => {
     // 1. Safety Check: Ensure we have a user object
@@ -79,11 +83,15 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    
+    // Optional: Decide if you want to keep the view preference or reset it.
+    // Usually, on logout, it's cleaner to reset to default.
+    localStorage.removeItem('appView'); // <--- Clear the saved view
+    
     setToken(null);
     setUser(null);
     setLogs([]);
-    setView('calendar');
-    // --- FIX 2: Show Logout Toast ---
+    setView('calendar'); // Reset state locally
     showToast('Logged out successfully.');
   };
 // Inside src/App.jsx
@@ -182,6 +190,7 @@ const handleEditRequest = () => {
             setDarkMode={setDarkMode}
             onProfileClick={() => setView('profile')} 
             isProfileActive={view === 'profile'}
+            onHomeClick={() => setView('calendar')}
           />
 
           {view === 'calendar' ? (

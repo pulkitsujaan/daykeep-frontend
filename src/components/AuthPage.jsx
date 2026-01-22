@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios'; // Ensure axios is installed: npm install axios
 import { User, Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import Logo from './Logo'; // <--- Import it
 
 const AuthPage = ({ onLoginSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -51,19 +52,21 @@ const AuthPage = ({ onLoginSuccess }) => {
   };
 
   return (
+    
     <div className="min-h-screen flex items-center justify-center p-4 bg-paper-bg transition-colors duration-500">
       
-      {/* Auth Card */}
       <div className="w-full max-w-md bg-paper-card dark:bg-night-card border-3 border-ink dark:border-chalk rounded-3xl shadow-soft dark:shadow-soft-dark p-8 relative overflow-hidden animate-in fade-in zoom-in duration-300">
         
-        {/* Header */}
+        {/* --- BRANDING SECTION --- */}
+        <div className="flex justify-center mb-8">
+            <Logo size="large" />
+        </div>
+        {/* ------------------------ */}
+
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-black text-ink dark:text-chalk mb-2">
-            {isLogin ? 'Welcome Back' : 'Join the Journey'}
-          </h1>
-          <p className="text-ink/60 dark:text-chalk/60 font-bold text-sm">
-            {isLogin ? 'Log your progress today.' : 'Start building your streak.'}
-          </p>
+          <h2 className="text-xl font-bold text-ink dark:text-chalk opacity-70">
+            {isLogin ? 'Welcome Back' : 'Start Your Journey'}
+          </h2>
         </div>
 
         {/* Error Message */}
