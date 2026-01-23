@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import axios from 'axios';
 import { X, UploadCloud, Image as ImageIcon, Trash2, CheckCircle } from 'lucide-react';
+import api from '../api';
 
 const ProfilePictureModal = ({ isOpen, onClose, user, token, onUpdateUser }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -18,7 +18,7 @@ const ProfilePictureModal = ({ isOpen, onClose, user, token, onUpdateUser }) => 
 
     try {
       // 1. Upload Image
-      const uploadRes = await axios.post('http://localhost:5000/api/entries/upload', formData, {
+      const uploadRes = await api.post('/entries/upload', formData, {
         headers: { 'Authorization': token, 'Content-Type': 'multipart/form-data' }
       });
       const newImageUrl = uploadRes.data[0]; // Get the URL
@@ -36,7 +36,7 @@ const ProfilePictureModal = ({ isOpen, onClose, user, token, onUpdateUser }) => 
   const handleSelectImage = async (imageUrl) => {
     setIsUploading(true);
     try {
-      const res = await axios.put('http://localhost:5000/api/auth/update', {
+      const res = await api.put('/auth/update', {
         userId: user.id || user._id,
         profilePicture: imageUrl
       }, {

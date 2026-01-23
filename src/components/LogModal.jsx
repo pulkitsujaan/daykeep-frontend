@@ -4,7 +4,7 @@ import {
   X, Image as ImageIcon, Trash2, UploadCloud, Target, 
   Plus, CheckSquare, Square, XSquare 
 } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 
 const LogModal = ({ onClose, date, onSave, existingData, token }) => {
   const [logText, setLogText] = useState('');
@@ -103,7 +103,7 @@ const LogModal = ({ onClose, date, onSave, existingData, token }) => {
         const formData = new FormData();
         newFiles.forEach(file => formData.append('images', file));
 
-        const res = await axios.post('http://localhost:5000/api/entries/upload', formData, {
+        const res = await api.post('/entries/upload', formData, {
             headers: { 
                 'Authorization': token,
                 'Content-Type': 'multipart/form-data'

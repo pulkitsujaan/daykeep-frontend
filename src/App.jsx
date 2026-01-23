@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; 
 import { format } from 'date-fns';
 import Header from './components/Header';
 import CalendarGrid from './components/CalendarGrid';
@@ -9,6 +8,7 @@ import AuthPage from './components/AuthPage';
 import Toast from './components/Toast'; // <--- Import Toast
 import ViewEntryModal from './components/ViewEntryModal'; // <--- Import new component
 import { themes } from './data/themes';
+import api from './api';  
 
 const ACCOUNT_CREATION_DATE = new Date(2023, 0, 1); 
 
@@ -64,10 +64,10 @@ function App() {
     try {
       // Fetch both Logs AND Stats (where the streak is calculated)
       const [logsRes, statsRes] = await Promise.all([
-        axios.get(`http://localhost:5000/api/entries/${realUserId}`, {
+        api.get(`/entries/${realUserId}`, {
           headers: { Authorization: token }
         }),
-        axios.get(`http://localhost:5000/api/entries/stats/${realUserId}`, {
+        api.get(`/entries/stats/${realUserId}`, {
           headers: { Authorization: token }
         })
       ]);
@@ -126,7 +126,7 @@ const handleSaveLog = async (newLog) => {
       return;
     }
 
-    await axios.post('http://localhost:5000/api/entries', {
+    await api.post('/entries', {
       userId: realUserId, // <--- Use the robust variable
       ...newLog
     }, {

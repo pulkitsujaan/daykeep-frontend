@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-import axios from "axios";
 import {
   User,
   Mail,
@@ -17,6 +16,7 @@ import {
 import { themes } from "../data/themes";
 import YearlyPixels from "./YearlyPixels";
 import ProfilePictureModal from "./ProfilePictureModal";
+import api from "../api";
 
 const UserProfile = ({
   currentTheme,
@@ -42,8 +42,8 @@ const UserProfile = ({
     const fetchStats = async () => {
       try {
         const realUserId = user.id || user._id;
-        const res = await axios.get(
-          `http://localhost:5000/api/entries/stats/${realUserId}`,
+        const res = await api.get(
+          `/entries/stats/${realUserId}`,
           {
             headers: { Authorization: token },
           },

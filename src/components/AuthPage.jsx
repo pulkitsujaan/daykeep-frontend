@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Ensure axios is installed: npm install axios
 import { User, Lock, Mail, ArrowRight, Loader2 } from 'lucide-react';
 import Logo from './Logo'; // <--- Import it
+import api from '../api';
 
 const AuthPage = ({ onLoginSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -26,7 +26,7 @@ const AuthPage = ({ onLoginSuccess }) => {
     setError('');
 
     // Backend URL (Make sure your server is running on port 5000)
-    const API_URL = 'http://localhost:5000/api/auth';
+    const API_URL = '/auth';
     const endpoint = isLogin ? '/login' : '/register';
 
     try {
@@ -34,7 +34,7 @@ const AuthPage = ({ onLoginSuccess }) => {
         ? { email: formData.email, password: formData.password }
         : formData;
 
-      const res = await axios.post(`${API_URL}${endpoint}`, payload);
+      const res = await api.post(`${API_URL}${endpoint}`, payload);
 
       if (isLogin) {
         // Success: Pass token and user data up to App.js

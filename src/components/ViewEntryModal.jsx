@@ -23,7 +23,7 @@ const ViewEntryModal = ({ date, data, onClose, onEdit, token }) => { // <--- Add
     try {
       // We re-send the whole entry data with the updated task list
       // (Ideally, backend would have a patch-task endpoint, but this works fine)
-      await axios.post('http://localhost:5000/api/entries', {
+      await api.post('/entries', {
          userId: data.userId || data._id, // Ensure we have the ID
          date: data.date,
          log: data.log,
