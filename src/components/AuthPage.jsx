@@ -26,15 +26,15 @@ const AuthPage = ({ onLoginSuccess }) => {
     setError('');
 
     // Backend URL (Make sure your server is running on port 5000)
-    const API_URL = `${api}/auth`;
     const endpoint = isLogin ? '/login' : '/register';
+    const route = `/auth/${endpoint}`;
 
     try {
       const payload = isLogin 
         ? { email: formData.email, password: formData.password }
         : formData;
 
-      const res = await api.post(`${API_URL}${endpoint}`, payload);
+      const res = await api.post(route, payload);
 
       if (isLogin) {
         // Success: Pass token and user data up to App.js
