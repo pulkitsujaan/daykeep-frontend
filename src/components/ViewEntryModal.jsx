@@ -120,8 +120,8 @@ const ViewEntryModal = ({ date, data, onClose, onEdit, token }) => { // <--- Add
                 <h4 className="font-bold text-sm uppercase tracking-widest opacity-60 mb-3">Memories</h4>
                 <div className="grid grid-cols-2 gap-3">
                     {data.images.map((url, idx) => (
-                        <div key={idx} onClick={() => setSelectedImage(`http://localhost:5000${url}`)} className="relative aspect-square rounded-2xl overflow-hidden border-2 border-ink/10 cursor-zoom-in group shadow-sm hover:shadow-md transition-all">
-                            <img src={`http://localhost:5000${url}`} alt="memory" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div key={idx} onClick={() => setSelectedImage(url)} className="relative aspect-square rounded-2xl overflow-hidden border-2 border-ink/10 cursor-zoom-in group shadow-sm hover:shadow-md transition-all">
+                            <img src={url} alt="memory" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                 <Maximize2 className="text-white drop-shadow-md" />
                             </div>

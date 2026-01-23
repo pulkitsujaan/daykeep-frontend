@@ -91,7 +91,7 @@ const ProfilePictureModal = ({ isOpen, onClose, user, token, onUpdateUser }) => 
                                 ${user.profilePicture === url ? 'border-[var(--color-accent)] ring-2 ring-[var(--color-accent)]/30' : 'border-ink/10 hover:border-ink/30'}
                             `}
                         >
-                            <img src={`http://localhost:5000${url}`} alt="history" className="w-full h-full object-cover" />
+                            <img src={url.startsWith('http') ? url : `http://localhost:5000${url}`} alt="history" className="w-full h-full object-cover" />
                             {user.profilePicture === url && (
                                 <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                                     <CheckCircle className="text-white drop-shadow-md" size={24} />

@@ -16,7 +16,7 @@ import {
 import { themes } from "../data/themes";
 import YearlyPixels from "./YearlyPixels";
 import ProfilePictureModal from "./ProfilePictureModal";
-import api from "../api";
+import api, { getImageUrl } from "../api";
 
 const UserProfile = ({
   currentTheme,
@@ -105,7 +105,7 @@ const UserProfile = ({
             <div className="w-24 h-24 rounded-2xl bg-ink dark:bg-chalk text-paper-bg dark:text-night-bg flex items-center justify-center border-2 border-ink dark:border-chalk shadow-soft overflow-hidden">
                 {user.profilePicture ? (
                     <img 
-                        src={`http://localhost:5000${user.profilePicture}`} 
+                        src={getImageUrl(user.profilePicture)} 
                         alt="Profile" 
                         className="w-full h-full object-cover"
                     />

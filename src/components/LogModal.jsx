@@ -4,7 +4,7 @@ import {
   X, Image as ImageIcon, Trash2, UploadCloud, Target, 
   Plus, CheckSquare, Square, XSquare 
 } from 'lucide-react';
-import api from '../api';
+import api, { getImageUrl } from '../api';
 
 const LogModal = ({ onClose, date, onSave, existingData, token }) => {
   const [logText, setLogText] = useState('');
@@ -306,7 +306,7 @@ const LogModal = ({ onClose, date, onSave, existingData, token }) => {
                         {/* Existing Images (From DB) */}
                         {images.map((url, idx) => (
                             <div key={`exist-${idx}`} className="relative aspect-square rounded-xl overflow-hidden border-2 border-ink/20 group">
-                                <img src={`http://localhost:5000${url}`} alt="memory" className="w-full h-full object-cover" />
+                                <img src={url.startsWith('http') ? url : `http://localhost:5000${url}`} alt="memory" className="w-full h-full object-cover" />
                                 <button 
                                     onClick={() => removeExistingImage(idx)}
                                     className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"
@@ -319,7 +319,7 @@ const LogModal = ({ onClose, date, onSave, existingData, token }) => {
                         {/* New Files (Previews) */}
                         {previewUrls.map((url, idx) => (
                             <div key={`new-${idx}`} className="relative aspect-square rounded-xl overflow-hidden border-2 border-[var(--color-accent)] group">
-                                <img src={url} alt="preview" className="w-full h-full object-cover opacity-80" />
+                                <img src={getImageUrl(url)} alt="preview" className="w-full h-full object-cover opacity-80" />
                                 <button 
                                     onClick={() => removeNewFile(idx)}
                                     className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white"

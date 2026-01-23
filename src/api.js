@@ -9,4 +9,14 @@ const api = axios.create({
   baseURL: `${BASE_URL}/api`, // Note: We attach '/api' here automatically
 });
 
+export const getImageUrl = (path) => {
+  if (!path) return '';
+  // If it starts with http, it's a Cloudinary URL -> Return as is
+  if (path.startsWith('http')) {
+    return path;
+  }
+  // Otherwise, it's an old local upload -> Prepend backend URL
+  return `${BASE_URL}${path}`;
+};
+
 export default api;
