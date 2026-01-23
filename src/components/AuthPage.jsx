@@ -26,7 +26,7 @@ const AuthPage = ({ onLoginSuccess }) => {
     setError('');
 
     // Backend URL (Make sure your server is running on port 5000)
-    const API_URL = '/auth';
+    const API_URL = `${api}/auth`;
     const endpoint = isLogin ? '/login' : '/register';
 
     try {
