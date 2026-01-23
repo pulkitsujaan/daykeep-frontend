@@ -87,6 +87,10 @@ function App() {
     // --- FIX 2: Show Success Toast ---
     showToast(`Welcome back, ${newUser.name || 'Friend'}!`);
   };
+  const handleUserUpdate = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser)); // Persist change
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -219,6 +223,8 @@ const handleEditRequest = () => {
               user={user}
               token={token}
               onLogout={handleLogout}
+              logs={logs}
+              onUpdateUser={handleUserUpdate}
             />
           )}
 
