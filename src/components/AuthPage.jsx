@@ -27,7 +27,7 @@ const AuthPage = ({ onLoginSuccess }) => {
 
     // Backend URL (Make sure your server is running on port 5000)
     const endpoint = isLogin ? '/login' : '/register';
-    const route = `/auth/${endpoint}`;
+    const route = `auth/${endpoint}`;
 
     try {
       const payload = isLogin 
