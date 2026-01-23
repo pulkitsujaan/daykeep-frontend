@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { format, isSameDay, startOfDay } from 'date-fns';
 import { X, Edit3, Maximize2, Star, CheckSquare, Square, XSquare } from 'lucide-react';
-import axios from 'axios';
+import api from '../api';
 
 const ViewEntryModal = ({ date, data, onClose, onEdit, token }) => { // <--- Added token
   const [selectedImage, setSelectedImage] = useState(null);
