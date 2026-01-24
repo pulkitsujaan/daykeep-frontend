@@ -272,35 +272,53 @@ const UserProfile = ({
         </div>
       )}
 
-      {/* --- NEW SECURITY SECTION --- */}
       <div className="flex-1 space-y-2 pb-4">
-       <div className="mt-8 pt-8 border-t-2 border-ink/5 dark:border-chalk/5">
-          <h4 className="font-bold text-sm uppercase tracking-widest opacity-40 mb-4">Account Settings</h4>
-          
-          <button 
-            onClick={() => setIsPasswordModalOpen(true)}
-            className="w-full bg-paper-card dark:bg-night-card border-2 border-ink/10 dark:border-chalk/10 hover:border-ink/30 p-4 rounded-2xl flex items-center justify-between group transition-all"
-          >
-             <div className="flex items-center gap-3">
+        {!user?.googleId && (
+          <div className="mt-8 pt-8 border-t-2 border-ink/5 dark:border-chalk/5">
+            <h4 className="font-bold text-sm uppercase tracking-widest opacity-40 mb-4">
+              Account Settings
+            </h4>
+
+            <button
+              onClick={() => setIsPasswordModalOpen(true)}
+              className="w-full bg-paper-card dark:bg-night-card border-2 border-ink/10 dark:border-chalk/10 hover:border-ink/30 p-4 rounded-2xl flex items-center justify-between group transition-all"
+            >
+              <div className="flex items-center gap-3">
                 <div className="p-2 bg-ink/5 dark:bg-chalk/5 rounded-full">
-                    <Lock size={18} className="opacity-60"/>
+                  <Lock size={18} className="opacity-60" />
                 </div>
                 <span className="font-bold">Change Password</span>
-             </div>
-             <div className="text-xs font-bold px-3 py-1 bg-ink/5 rounded-lg group-hover:bg-ink group-hover:text-white transition-colors">
+              </div>
+              <div className="text-xs font-bold px-3 py-1 bg-ink/5 rounded-lg group-hover:bg-ink group-hover:text-white transition-colors">
                 Edit
-             </div>
-          </button>
-       </div>
+              </div>
+            </button>
+          </div>
+        )}
+        {user?.googleId && (
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl mb-8 flex items-center gap-3">
+            <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-full">
+              <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                className="w-5 h-5"
+                alt="G"
+              />
+            </div>
+            <p className="text-sm text-ink/70 dark:text-chalk/70">
+              You are logged in with <strong>Google</strong>. You don't need a
+              password.
+            </p>
+          </div>
+        )}
 
-       {/* --- RENDER MODAL --- */}
-       <ChangePasswordModal 
+        {/* --- RENDER MODAL --- */}
+        <ChangePasswordModal
           isOpen={isPasswordModalOpen}
           onClose={() => setIsPasswordModalOpen(false)}
           userId={user._id || user.id}
           token={token}
-       /> 
-       </div>
+        />
+      </div>
 
       {/* --- THEME SELECTOR --- */}
       <div className="space-y-4">
