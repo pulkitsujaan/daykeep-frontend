@@ -1,16 +1,43 @@
-# React + Vite
+# 📖 DayKeep Journal - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A beautiful, minimalist daily journaling application built with React and Tailwind CSS. DayKeep allows users to track their memories, maintain streaks, and customize their journaling experience with themes and dark mode.
 
-Currently, two official plugins are available:
+> **Note:** This is the Frontend repository. The Backend repository can be found [here](#) *(link to your server repo if applicable)*.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **📅 Interactive Calendar:** Visual grid to track daily entries and moods.
+* **🎨 Theming Engine:** Switch between "Vintage", "Forest", "Ocean", and more.
+* **dark/light Mode:** Fully responsive dark mode support.
+* **📷 Media Support:** Upload and preview images with your journal entries.
+* **🔥 Streak Tracking:** visual indicators to keep you motivated.
+* **🔐 Secure Auth:** JWT-based authentication (Login/Register).
+* **📱 Responsive Design:** Works seamlessly on desktop and mobile.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Tech Stack
+
+* **Framework:** [React](https://reactjs.org/) (v18)
+* **Build Tool:** [Vite](https://vitejs.dev/)
+* **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+* **Icons:** [Lucide React](https://lucide.dev/)
+* **Date Handling:** [date-fns](https://date-fns.org/)
+* **HTTP Client:** Axios
+* **Notifications:** Custom Toast system
+
+---
+
+## 🚀 Getting Started
+
+Follow these steps to set up the project locally.
+
+### 1. Prerequisites
+Make sure you have **Node.js** (v16 or higher) installed on your machine.
+
+### 2. Clone the Repository
+```bash
+git clone https://github.com/yourusername/daykeep-frontend.git
+cd daykeep-client
