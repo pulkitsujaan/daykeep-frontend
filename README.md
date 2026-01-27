@@ -2,7 +2,7 @@
 
 A beautiful, minimalist daily journaling application built with React and Tailwind CSS. DayKeep allows users to track their memories, maintain streaks, and customize their journaling experience with themes and dark mode.
 
-> **Note:** This is the Frontend repository. The Backend repository can be found [here](#) *(link to your server repo if applicable)*.
+> **Note:** This is the Frontend repository. The Backend repository can be found [here](https://github.com/pulkitsujaan/daykeep-backend)
 
 ---
 
