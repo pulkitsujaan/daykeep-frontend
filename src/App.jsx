@@ -156,21 +156,6 @@ function App() {
     selectedDate && l.date === format(selectedDate, 'yyyy-MM-dd')
   );
 
-  useEffect(() => {
-  // Check URL for token (from Google Login)
-  const query = new URLSearchParams(window.location.search);
-  const urlToken = query.get('token');
-  const urlUser = query.get('user');
-
-  if (urlToken && urlUser) {
-      const parsedUser = JSON.parse(urlUser);
-      handleLoginSuccess(urlToken, parsedUser);
-      
-      // Clear URL to look clean
-      window.history.replaceState({}, document.title, "/");
-  }
-}, []);
-
   return (
     <div className={`min-h-screen w-full transition-colors duration-500 font-sans ${darkMode ? 'bg-night-bg text-chalk' : 'bg-paper-bg text-ink'}`}>
       

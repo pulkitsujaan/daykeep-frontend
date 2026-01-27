@@ -273,7 +273,7 @@ const UserProfile = ({
       )}
 
       <div className="flex-1 space-y-2 pb-4">
-        {!user?.googleId && (
+        {(
           <div className="mt-8 pt-8 border-t-2 border-ink/5 dark:border-chalk/5">
             <h4 className="font-bold text-sm uppercase tracking-widest opacity-40 mb-4">
               Account Settings
@@ -293,21 +293,6 @@ const UserProfile = ({
                 Edit
               </div>
             </button>
-          </div>
-        )}
-        {user?.googleId && (
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl mb-8 flex items-center gap-3">
-            <div className="bg-blue-100 dark:bg-blue-800 p-2 rounded-full">
-              <img
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
-                className="w-5 h-5"
-                alt="G"
-              />
-            </div>
-            <p className="text-sm text-ink/70 dark:text-chalk/70">
-              You are logged in with <strong>Google</strong>. You don't need a
-              password.
-            </p>
           </div>
         )}
 

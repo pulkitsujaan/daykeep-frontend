@@ -160,27 +160,6 @@ const AuthPage = ({ onLoginSuccess }) => {
             </button>
           </p>
         </div>
-        <div className="mt-4 flex flex-col gap-2">
-          <div className="relative flex py-2 items-center">
-            <div className="flex-grow border-t border-ink/10 dark:border-chalk/10"></div>
-            <span className="flex-shrink mx-4 text-ink/40 dark:text-chalk/40 text-xs font-bold uppercase">
-              Or continue with
-            </span>
-            <div className="flex-grow border-t border-ink/10 dark:border-chalk/10"></div>
-          </div>
-
-          <a
-            href={`${BACKEND_URL}/api/auth/google`}
-            className="w-full py-3 bg-white dark:bg-white text-black font-bold rounded-2xl border-2 border-ink/10 hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
-          >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              className="w-5 h-5"
-              alt="Google"
-            />
-            Google
-          </a>
-        </div>
       </div>
     </div>
   );
